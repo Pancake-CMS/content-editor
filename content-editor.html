@@ -1,0 +1,16 @@
+<script>
+    ContentEditorBehaviour = {
+        properties: {
+            isContentMode: {
+                type: Boolean,
+                value: false,
+                notify: true
+            }
+        },
+
+        ready: function() {
+            console.log(this.$$('[is-content]'));
+        }
+
+    }
+</script>
