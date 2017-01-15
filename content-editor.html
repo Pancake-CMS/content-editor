@@ -5,12 +5,26 @@
                 type: Boolean,
                 value: false,
                 notify: true
+            },
+
+            parentId: {
+                type: String,
+                notify: true
             }
         },
 
         ready: function() {
-            console.log(this.$$('[is-content]'));
-        }
+            var contentDivs = Polymer.dom(this.root).querySelectorAll('[is-content]');
+            for(var i = 0; i < contentDivs.length; i++) {
+                var selector = '[parent-id=' + this.parentId + '] [content-id=' + contentDivs[i].getAttribute('content-id') + ']';
+                tinymce.init({
+                    selector: selector,
+                    inline: true,
+                    toolbar: 'undo redo',
+                    menubar: false
+                });
+            }
+        },
 
     }
 </script>

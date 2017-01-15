@@ -1,5 +1,5 @@
 # content-editor
-A web component that lets users edit the content in their elements.
+A polymer behavior that upgrades a user component to handle content.
 
 ### Installation
 
