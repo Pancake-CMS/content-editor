@@ -1,5 +1,5 @@
 <script>
-    ContentEditorBehaviour = {
+    ContentEditorBehavior = {
         properties: {
             isContentMode: {
                 type: Boolean,
@@ -37,6 +37,15 @@
                             'insertdatetime media table contextmenu paste code'
                         ],
                         toolbar: 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image'
+                    });
+                } else if(mode == 'inline-more') {
+                    tinymce.init({
+                        selector: selector,
+                        theme: 'inlite',
+                        plugins: 'image table link paste contextmenu textpattern autolink',
+                        insert_toolbar: 'quickimage quicktable',
+                        selection_toolbar: 'bold italic | quicklink h2 h3 blockquote',
+                        inline: true,
                     });
                 }
             }
