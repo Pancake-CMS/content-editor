@@ -1,3 +1,4 @@
+
 <script>
     ContentEditorBehavior = {
         properties: {
@@ -10,21 +11,35 @@
             parentId: {
                 type: String,
                 notify: true
+            },
+
+            contentValues: {
+                type: Object,
+                value: {},
+                notify: true
             }
         },
 
         ready: function() {
             var contentDivs = Polymer.dom(this.root).querySelectorAll('[is-content]');
+
             for(var i = 0; i < contentDivs.length; i++) {
                 var selector = '[parent-id=' + this.parentId + '] [content-id=' + contentDivs[i].getAttribute('content-id') + ']',
                     mode = contentDivs[i].getAttribute('is-content');
+
+                this.contentValues[contentDivs[i].getAttribute('content-id')] = "";
 
                 if(mode == 'inline') {
                     tinymce.init({
                         selector: selector,
                         inline: true,
                         toolbar: 'undo redo',
-                        menubar: false
+                        menubar: false,
+                        init_instance_callback: function (editor) {
+                            editor.on('blur', function (e) {
+                                console.log('Editor was blurred!', e);
+                            });
+                        }
                     });
                 } else if(mode == 'wsywig') {
                     tinymce.init({
@@ -49,7 +64,6 @@
                     });
                 }
             }
-        },
-
+        }
     }
 </script>
