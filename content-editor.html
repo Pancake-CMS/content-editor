@@ -17,6 +17,12 @@
                 type: String,
                 value: '',
                 notify: true
+            },
+
+            usercontent: {
+                type: Object,
+                notify: true,
+                reflectToAttribute: false
             }
         },
 
@@ -27,6 +33,8 @@
                 var selector = '[parent-id=' + this.parentId + '] [content-id=' + contentDivs[i].getAttribute('content-id') + ']',
                     mode = contentDivs[i].getAttribute('is-content'),
                     contentId = contentDivs[i].getAttribute('content-id');
+
+                this._addContentToHTML(contentId);
 
                 if(mode == 'inline') {
                     tinymce.init({
@@ -96,6 +104,15 @@
                         }
                     });
                 }
+            }
+        },
+
+        /*
+         *  This add the already available content to the html of the divs
+         */
+        _addContentToHTML: function(contentId) {
+            if(!!this.usercontent && !!this.usercontent[contentId]) {
+                this.$$('[content-id='+ contentId +']').innerHTML = this.usercontent[contentId];
             }
         }
     }
