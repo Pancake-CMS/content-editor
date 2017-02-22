@@ -22,11 +22,29 @@
             usercontent: {
                 type: Object,
                 notify: true,
-                reflectToAttribute: false
+                reflectToAttribute: false,
+                observer: '_usercontentChanged'
             }
         },
 
         ready: function() {
+            this._updateContent();
+        },
+
+        /*
+         *  This add the already available content to the html of the divs
+         */
+        _addContentToHTML: function(contentId) {
+            if(!!this.usercontent && !!this.usercontent[contentId]) {
+                this.$$('[content-id='+ contentId +']').innerHTML = this.usercontent[contentId];
+            }
+        },
+
+        _usercontentChanged: function() {
+            this._updateContent();
+        },
+
+        _updateContent: function() {
             var contentDivs = Polymer.dom(this.root).querySelectorAll('[is-content]');
 
             for(var i = 0; i < contentDivs.length; i++) {
@@ -36,83 +54,76 @@
 
                 this._addContentToHTML(contentId);
 
-                if(mode == 'inline') {
-                    tinymce.init({
-                        selector: selector,
-                        inline: true,
-                        toolbar: 'undo redo',
-                        menubar: false,
-                        init_instance_callback: (editor) => {
-                            editor.on('save', (e) => {
-                                this.fire('iron-signal', {
-                                    name: 'page-operation',
-                                    data: {
-                                        operation: 'save',
-                                        path: this.path,
-                                        contentnode: editor.getBody().getAttribute('content-id'),
-                                        value: editor.getContent()
-                                    }
+                if(this.isContentMode) {
+                    if(mode == 'inline') {
+                        tinymce.init({
+                            selector: selector,
+                            inline: true,
+                            toolbar: 'undo redo',
+                            menubar: false,
+                            init_instance_callback: (editor) => {
+                                editor.on('save', (e) => {
+                                    this.fire('iron-signal', {
+                                        name: 'page-operation',
+                                        data: {
+                                            operation: 'save',
+                                            path: this.path,
+                                            contentnode: editor.getBody().getAttribute('content-id'),
+                                            value: editor.getContent()
+                                        }
+                                    });
                                 });
-                            });
-                        }
-                    });
-                } else if(mode == 'wsywig') {
-                    tinymce.init({
-                        selector: selector,
-                        height: 200,
-                        menubar: false,
-                        plugins: [
-                            'advlist autolink lists link image charmap print preview anchor',
-                            'searchreplace visualblocks code fullscreen',
-                            'insertdatetime media table contextmenu paste code'
-                        ],
-                        init_instance_callback: (editor) => {
-                            editor.on('save', (e) => {
-                                this.fire('iron-signal', {
-                                    name: 'page-operation',
-                                    data: {
-                                        operation: 'save',
-                                        path: this.path,
-                                        contentnode: contentId,
-                                        value: editor.getContent()
-                                    }
+                            }
+                        });
+                    } else if(mode == 'wsywig') {
+                        tinymce.init({
+                            selector: selector,
+                            height: 200,
+                            menubar: false,
+                            plugins: [
+                                'advlist autolink lists link image charmap print preview anchor',
+                                'searchreplace visualblocks code fullscreen',
+                                'insertdatetime media table contextmenu paste code'
+                            ],
+                            init_instance_callback: (editor) => {
+                                editor.on('save', (e) => {
+                                    this.fire('iron-signal', {
+                                        name: 'page-operation',
+                                        data: {
+                                            operation: 'save',
+                                            path: this.path,
+                                            contentnode: contentId,
+                                            value: editor.getContent()
+                                        }
+                                    });
                                 });
-                            });
-                        },
-                        toolbar: 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image'
-                    });
-                } else if(mode == 'inline-more') {
-                    tinymce.init({
-                        selector: selector,
-                        theme: 'inlite',
-                        plugins: 'image table link paste contextmenu textpattern autolink',
-                        insert_toolbar: 'quickimage quicktable',
-                        selection_toolbar: 'bold italic | quicklink h2 h3 blockquote',
-                        inline: true,
-                        init_instance_callback: (editor) => {
-                            editor.on('save', (e) => {
-                                this.fire('iron-signal', {
-                                    name: 'page-operation',
-                                    data: {
-                                        operation: 'save',
-                                        path: this.path,
-                                        contentnode: contentId,
-                                        value: editor.getContent()
-                                    }
+                            },
+                            toolbar: 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image'
+                        });
+                    } else if(mode == 'inline-more') {
+                        tinymce.init({
+                            selector: selector,
+                            theme: 'inlite',
+                            plugins: 'image table link paste contextmenu textpattern autolink',
+                            insert_toolbar: 'quickimage quicktable',
+                            selection_toolbar: 'bold italic | quicklink h2 h3 blockquote',
+                            inline: true,
+                            init_instance_callback: (editor) => {
+                                editor.on('save', (e) => {
+                                    this.fire('iron-signal', {
+                                        name: 'page-operation',
+                                        data: {
+                                            operation: 'save',
+                                            path: this.path,
+                                            contentnode: contentId,
+                                            value: editor.getContent()
+                                        }
+                                    });
                                 });
-                            });
-                        }
-                    });
+                            }
+                        });
+                    }
                 }
-            }
-        },
-
-        /*
-         *  This add the already available content to the html of the divs
-         */
-        _addContentToHTML: function(contentId) {
-            if(!!this.usercontent && !!this.usercontent[contentId]) {
-                this.$$('[content-id='+ contentId +']').innerHTML = this.usercontent[contentId];
             }
         }
     }
