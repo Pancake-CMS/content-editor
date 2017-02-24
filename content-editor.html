@@ -2,7 +2,7 @@
 <script>
     ContentEditorBehavior = {
         properties: {
-            isContentMode: {
+            inContentMode: {
                 type: Boolean,
                 value: false,
                 notify: true
@@ -54,7 +54,7 @@
 
                 this._addContentToHTML(contentId);
 
-                if(this.isContentMode) {
+                if(this.inContentMode) {
                     if(mode == 'inline') {
                         tinymce.init({
                             selector: selector,
