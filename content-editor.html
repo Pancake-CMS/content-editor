@@ -40,6 +40,17 @@
             }
         },
 
+        _addContentToAttr: function(contentId, contentAttributes) {
+            var attributes = contentAttributes.split(',');
+            for(var i=0; i< attributes.length; i++) {
+                attributes[i] = attributes[i].trim();
+                if(!!this.usercontent[contentId][attributes[i]]) {
+                    this.set(attributes[i], this.usercontent[contentId][attributes[i]]);
+                }
+            }
+
+        },
+
         _usercontentChanged: function() {
             this._updateContent();
         },
@@ -52,7 +63,12 @@
                     mode = contentDivs[i].getAttribute('is-content'),
                     contentId = contentDivs[i].getAttribute('content-id');
 
-                this._addContentToHTML(contentId);
+                if(mode === 'attr') {
+                    var contentAttributes = contentDivs[i].getAttribute('content-attr');
+                    this._addContentToAttr(contentId, contentAttributes);
+                } else {
+                    this._addContentToHTML(contentId);
+                }
 
                 if(this.inContentMode) {
                     if(mode == 'inline') {
