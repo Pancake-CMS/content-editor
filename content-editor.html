@@ -1,4 +1,3 @@
-
 <script>
     ContentEditorBehavior = {
         properties: {
@@ -40,6 +39,7 @@
             }
         },
 
+        // Updates attributes to use values from usercontent
         _addContentToAttr: function(contentId, contentAttributes) {
             var attributes = contentAttributes.split(',');
             for(var i=0; i< attributes.length; i++) {
@@ -53,6 +53,23 @@
 
         _usercontentChanged: function() {
             this._updateContent();
+        },
+
+        // Add click event to attributes that can be changed via usercontent
+        _addAttributeEditorToElement: function(selector, contentId, contentAttributes) {
+            let attributeEditor = this.create('attribute-editor',{
+                usercontent: this.usercontent[contentId],
+                path: this.path,
+                contentId: contentId
+            });
+            Polymer.dom(this.root).appendChild(attributeEditor);
+            attributeEditor.addEventListener('value-changed', (e, detail) => {
+                this.set('usercontent.' + e.detail.contentId, e.detail.usercontent);
+                this._addContentToAttr(contentId, contentAttributes);
+            });
+            this.$$(selector).addEventListener('click', () => {
+                attributeEditor.open();
+            });
         },
 
         _updateContent: function() {
@@ -71,7 +88,11 @@
                 }
 
                 if(this.inContentMode) {
-                    if(mode == 'inline') {
+                    if(mode === 'attr') {
+                        console.log(i + ' h ello')
+                        let contentAttributes = contentDivs[i].getAttribute('content-attr');
+                        this._addAttributeEditorToElement(selector, contentId, contentAttributes);
+                    } else if(mode == 'inline') {
                         tinymce.init({
                             selector: selector,
                             inline: true,
