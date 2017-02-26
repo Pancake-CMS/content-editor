@@ -39,6 +39,21 @@
             }
         },
 
+        _handleEmptyUserContent: function(contentId, contentAttributes) {
+            this.usercontent = this.usercontent || {};
+            this.usercontent[contentId] = this.usercontent[contentId] || {};
+
+            var attributes = contentAttributes.split(','),
+                obj = {};
+            for(var i=0; i< attributes.length; i++) {
+                attributes[i] = attributes[i].trim();
+                obj[attributes[i]] = this.usercontent[contentId][attributes[i]] || attributes[i];
+            }
+
+
+            this.set('usercontent.' + contentId, obj);
+        },
+
         // Updates attributes to use values from usercontent
         _addContentToAttr: function(contentId, contentAttributes) {
             if(!this.usercontent || !this.usercontent[contentId]) {
@@ -82,10 +97,11 @@
             for(var i = 0; i < contentDivs.length; i++) {
                 var selector = '[parent-id=' + this.parentId + '] [content-id=' + contentDivs[i].getAttribute('content-id') + ']',
                     mode = contentDivs[i].getAttribute('is-content'),
-                    contentId = contentDivs[i].getAttribute('content-id');
+                    contentId = contentDivs[i].getAttribute('content-id'),
+                    contentAttributes = contentDivs[i].getAttribute('content-attr');
 
                 if(mode === 'attr') {
-                    var contentAttributes = contentDivs[i].getAttribute('content-attr');
+                    this._handleEmptyUserContent(contentId, contentAttributes);
                     this._addContentToAttr(contentId, contentAttributes);
                 } else {
                     this._addContentToHTML(contentId);
@@ -93,10 +109,6 @@
 
                 if(this.inContentMode) {
                     if(mode === 'attr') {
-                        this.usercontent = this.usercontent || {};
-                        this.usercontent[contentId] = this.usercontent[contentId] || {};
-                        this.set('usercontent', this.usercontent);
-                        let contentAttributes = contentDivs[i].getAttribute('content-attr');
                         this._addAttributeEditorToElement(selector, contentId, contentAttributes);
                     } else if(mode == 'inline') {
                         tinymce.init({
