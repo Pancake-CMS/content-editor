@@ -41,6 +41,10 @@
 
         // Updates attributes to use values from usercontent
         _addContentToAttr: function(contentId, contentAttributes) {
+            if(!this.usercontent) {
+                return;
+            }
+
             var attributes = contentAttributes.split(',');
             for(var i=0; i< attributes.length; i++) {
                 attributes[i] = attributes[i].trim();
