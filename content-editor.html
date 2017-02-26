@@ -41,7 +41,7 @@
 
         // Updates attributes to use values from usercontent
         _addContentToAttr: function(contentId, contentAttributes) {
-            if(!this.usercontent) {
+            if(!this.usercontent || !this.usercontent[contentId]) {
                 return;
             }
 
@@ -93,7 +93,9 @@
 
                 if(this.inContentMode) {
                     if(mode === 'attr') {
-                        console.log(i + ' h ello')
+                        this.usercontent = this.usercontent || {};
+                        this.usercontent[contentId] = this.usercontent[contentId] || {};
+                        this.set('usercontent', this.usercontent);
                         let contentAttributes = contentDivs[i].getAttribute('content-attr');
                         this._addAttributeEditorToElement(selector, contentId, contentAttributes);
                     } else if(mode == 'inline') {
