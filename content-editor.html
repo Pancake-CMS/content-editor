@@ -86,9 +86,6 @@
                 this.set('usercontent.' + e.detail.contentId, e.detail.usercontent);
                 this._addContentToAttr(contentId, contentAttributes);
             });
-            this.$$(selector).addEventListener('click', () => {
-                attributeEditor.open();
-            });
         },
 
         _updateContent: function() {
